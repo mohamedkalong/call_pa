@@ -15,7 +15,7 @@ def trigger_pa():
     # In 4 ký tự đầu và cuối của Token để bạn đối chiếu xem có đúng mã trên PA không
     print(f"🔑 Token nhận được: {API_TOKEN[:4]}****{API_TOKEN[-4:]}")
 
-    url = f"https://www.pythonanywhere.com/api/v0/user/{USERNAME}/consoles/"
+    url = f"https://eu.pythonanywhere.com/api/v0/user/{USERNAME}/consoles/"
     headers = {
         'Authorization': f'Token {API_TOKEN.strip()}' # Dùng .strip() để xóa khoảng trắng thừa
     }
