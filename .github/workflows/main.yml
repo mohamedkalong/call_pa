@@ -1,0 +1,22 @@
+name: Trigger PA Scan
+
+on:
+  schedule:
+    - cron: '01 01 * * *' # 8g01 VNT
+    - cron: '01 13 * * *' # 20g01 VNT
+    - cron: '01 18 * * *' # 1g01 VNT
+  workflow_dispatch:
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Run Trigger
+        run: |
+          pip install requests
+          python trigger.py
