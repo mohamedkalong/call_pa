@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: '3.9'
       - name: Run Trigger
+        env:
+          PA_TOKEN: ${{ secrets.PA_TOKEN }} # Dòng này cực kỳ quan trọng
         run: |
           pip install requests
           python trigger.py
