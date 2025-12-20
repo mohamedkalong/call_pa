@@ -1,14 +1,14 @@
-name: Trigger PA Scan
+name: Binance Proxy Bot
 
 on:
   schedule:
     - cron: '01 01 * * *' # 8g01 VNT
     - cron: '01 13 * * *' # 20g01 VNT
     - cron: '01 18 * * *' # 1g01 VNT
-  workflow_dispatch:
+  workflow_dispatch:      # Bấm chạy tay để test
 
 jobs:
-  trigger:
+  run-bot:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,9 +16,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Run Trigger
-        env:
-          PA_TOKEN: ${{ secrets.PA_TOKEN }} # Dòng này cực kỳ quan trọng
-        run: |
-          pip install requests
-          python trigger.py
+      - name: Install dependencies
+        run: pip install pandas requests
+      - name: Execute Script
+        run: python bot_rsi_github.py
