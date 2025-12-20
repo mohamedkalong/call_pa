@@ -2,10 +2,11 @@ name: Binance Proxy Bot
 
 on:
   schedule:
+    - cron: '1 3 * * *' # 10g01 VNT for test
     - cron: '1 1 * * *' # 8g01 VNT
     - cron: '1 13 * * *' # 20g01 VNT
     - cron: '1 18 * * *' # 1g01 VNT
-    - cron: '1 3 * * *' # 8g01 VNT
+
   workflow_dispatch:      # Bấm chạy tay để test
 
 jobs:
