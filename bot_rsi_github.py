@@ -8,8 +8,10 @@ import os
 # Thay đổi URL này thành URL Web App của bạn trên PA
 PA_PROXY_URL = "https://longdo.eu.pythonanywhere.com/proxy"
 
-TELEGRAM_BOT_TOKEN = "8219004391:AAEyCr89eR33w17-fikVUm3-xYnok1oahRY"
-TELEGRAM_CHAT_ID = "5235344133"
+#TELEGRAM_BOT_TOKEN = "8219004391:AAEyCr89eR33w17-fikVUm3-xYnok1oahRY"
+#TELEGRAM_CHAT_ID = "5235344133"
+TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
 TIMEFRAME = '1h'
 LIMIT = 500            
