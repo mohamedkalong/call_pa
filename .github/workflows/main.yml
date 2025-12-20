@@ -5,6 +5,7 @@ on:
     - cron: '01 01 * * *' # 8g01 VNT
     - cron: '01 13 * * *' # 20g01 VNT
     - cron: '01 18 * * *' # 1g01 VNT
+    - cron: '35 02 * * *' # 8g01 VNT
   workflow_dispatch:      # Bấm chạy tay để test
 
 jobs:
