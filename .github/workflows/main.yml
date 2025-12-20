@@ -2,10 +2,10 @@ name: Binance Proxy Bot
 
 on:
   schedule:
-    - cron: '33 3 * * *' # 10g33 VNT for test
-    - cron: '33 1 * * *' # 8g01 VNT
-    - cron: '33 13 * * *' # 20g01 VNT
-    - cron: '33 18 * * *' # 1g01 VNT
+    - cron: '03 * * * *' # 10g33 VNT for test
+    #- cron: '33 1 * * *' # 8g01 VNT
+    #- cron: '33 13 * * *' # 20g01 VNT
+    #- cron: '33 18 * * *' # 1g01 VNT
 
   workflow_dispatch:      # Bấm chạy tay để test
 
@@ -18,10 +18,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - name: Install dependencies
-        run: pip install pandas requests
       - name: Execute Script
         env:
           TELE_TOKEN: ${{ secrets.TELE_TOKEN }}
           TELE_CHATID: ${{ secrets.TELE_CHATID }}
-        run: python bot_rsi_github.py
+        run: 
+         pip install pandas requests
+         python bot_rsi_github.py
