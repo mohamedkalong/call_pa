@@ -2,9 +2,9 @@ name: Binance Proxy Bot
 
 on:
   schedule:
-    - cron: '55 18 * * *' # 2g VN
-    - cron: '55 0 * * *' # 8g VN
-    - cron: '55 7 * * *' # 15g VN
+    - cron: '23 18 * * *' # 1g.xx VN
+    - cron: '23 0 * * *' # 8g VN
+    - cron: '58 7 * * *' # 15g VN
     - cron: '55 12 * * *' # 20g VN
     - cron: '55 14 * * *' # 22g VN
     
