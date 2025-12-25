@@ -1,13 +1,14 @@
 import pandas as pd
 import requests
 import time
-from datetime import datetime
+from datetime import datetime, timedelta # <--- Đã thêm timedelta
 import os
 
 # ================= CẤU HÌNH (CONFIG) =================
 # Thay đổi URL này thành URL Web App của bạn trên PA
 PA_PROXY_URL = "https://longdo.eu.pythonanywhere.com/proxy"
 
+# Lấy Token từ GitHub Secrets
 #TELEGRAM_BOT_TOKEN = "8219004391:AAEyCr89eR33w17-fikVUm3-xYnok1oahRY"
 #TELEGRAM_CHAT_ID = "5235344133"
 TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
@@ -86,20 +87,24 @@ def main():
         time.sleep(0.5) # Nghỉ để tránh quá tải Web App PA
 
     # 4. Gửi Telegram
-    now = datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
+    # --- SỬA ĐỔI MÚI GIỜ TẠI ĐÂY ---
+    # GitHub Server chạy UTC, cộng thêm 7 giờ để ra giờ Việt Nam
+    now_vn = datetime.utcnow() + timedelta(hours=7)
+    now_str = now_vn.strftime("%Y-%m-%d, %H:%M:%S")
+    
     if results:
         results.sort(key=lambda x: x['c'], reverse=True)
         msg = f"🚀 **CẢNH BÁO: 24h CHANGE > {CHANGE_THRESHOLD}% & RSI > {RSI_THRESHOLD}**\n"
-        msg += f"⏰ _Time: {now}_ (GitHub)\n\n"
+        msg += f"⏰ _Time: {now_str} (Github)_\n\n"
         for index, item in enumerate(results, start=1):
             msg += f"{index}. #{item['s']} | **{item['p']}** | 24h: `+{item['c']}%` | RSI: `{item['r']:.1f}`\n"
     else:
-        msg = f"ℹ️ **THÔNG BÁO QUÉT COIN**\n⏰ _Time: {now}_\n❌ Không có coin nào thỏa mãn."
+        msg = f"ℹ️ **THÔNG BÁO QUÉT COIN**\n⏰ _Time: {now_str} (VN Time)_\n❌ Không có coin nào thỏa mãn."
 
     try:
         tele_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(tele_url, json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "Markdown"})
-        print(f"✅ Đã gửi báo cáo.")
+        print(f"✅ Đã gửi báo cáo lúc {now_str}.")
     except Exception as e:
         print(f"❌ Lỗi Telegram: {e}")
 
