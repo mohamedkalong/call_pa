@@ -90,7 +90,7 @@ def main():
     # --- SỬA ĐỔI MÚI GIỜ TẠI ĐÂY ---
     # GitHub Server chạy UTC, cộng thêm 7 giờ để ra giờ Việt Nam
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    now_str = now_vn.strftime("%Y-%m-%d, %H:%M:%S")
+    now_str = now_vn.strftime("%d-%m-%Y, %H:%M:%S")
     
     if results:
         results.sort(key=lambda x: x['c'], reverse=True)
