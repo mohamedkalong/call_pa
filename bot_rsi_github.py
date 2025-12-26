@@ -10,7 +10,7 @@ PA_PROXY_URL = "https://longdo.eu.pythonanywhere.com/proxy"
 
 # Lấy Token từ GitHub Secrets
 #TELEGRAM_BOT_TOKEN = "8219004391:AAEyCr89eR33w17-fikVUm3-xYnok1oahRY"
-#TELEGRAM_CHAT_ID = "5235344133"
+#TELEGRAM_CHAT_ID = "-1003618825373" #channel Long1_bot_up20%_rsi70
 TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
