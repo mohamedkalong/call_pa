@@ -104,7 +104,7 @@ def main():
         results.sort(key=lambda x: x['r'], reverse=True)
 
         msg = f"🚀 **LỌC COIN 24H +{CHANGE_THRESHOLD}% & VOL> {format_volume(VOLUME_THRESHOLD)} & RSI> {RSI_THRESHOLD}**\n"
-        msg += f"  ⏰ Time: {now_str}. (PA dkgono1)\n\n"
+        msg += f"  ⏰ Time: {now_str}. (github)\n\n"
         
         for index, item in enumerate(results, start=1):
             vol_str = format_volume(item['v'])
