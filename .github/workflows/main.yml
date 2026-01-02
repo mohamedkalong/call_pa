@@ -3,7 +3,7 @@ name: Github bot rsi70
 on:
   schedule:
    # - cron: '23 18 * * *' # 1g.xx VN => dkgono1
-    - cron: '50 0 * * *' # 8g VN 
+    - cron: '50 23 * * *' # 6g50 VN => ca 8g
     - cron: '55 7 * * *' # 15g VN
     - cron: '50 12 * * *' # 20g VN
    # - cron: '55 14 * * *' # 22g VN => mohamedkalong
