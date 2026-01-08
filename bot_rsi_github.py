@@ -115,8 +115,8 @@ def main():
             # Format: 1. #COIN | price | 24h x% | RSI x | Vol 50M #RSI80Plus
             msg += f"{index}. **#{item['s']}**|{item['p']}|+{item['c']}%|RSI:{item['r']:.1f}|Vol:{vol_str}{rsi_tag}\n"
     else:
-        msg = f"ℹ️ **BOT REPORT**\n⏰ {now_str}\n✅ System OK.\n❌ Không tìm thấy coin thỏa 3 điều kiện."
-
+        msg = f"ℹ️ **LỌC COIN 24H +{CHANGE_THRESHOLD}% & VOL> {format_volume(VOLUME_THRESHOLD)} & RSI> {RSI_THRESHOLD}**\n"
+        msg += f"⏰ {now_str}\n✅ System OK.\n❌ Không tìm thấy coin thỏa 3 điều kiện."
     try:
         tele_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(tele_url, json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "Markdown"})
