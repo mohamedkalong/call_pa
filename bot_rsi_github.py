@@ -17,8 +17,8 @@ RSI_PERIOD = 14
 
 # 3 ĐIỀU KIỆN CHÍNH:
 CHANGE_THRESHOLD = 20         # 1. Change > 20%
-VOLUME_THRESHOLD = 30_000_000 # 2. Volume 
-RSI_THRESHOLD = 70            # 3. RSI > 70
+VOLUME_THRESHOLD = 31_000_000 # 2. Volume 
+RSI_THRESHOLD = 68            # 3. RSI > 70
 
 # ================= HÀM XỬ LÝ =================
 
