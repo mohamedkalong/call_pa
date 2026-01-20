@@ -12,7 +12,7 @@ TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
 # --- CẤU HÌNH ĐIỀU KIỆN LỌC ---
 TIMEFRAME = '1h'
-LIMIT = 244  #lấy bao nhiêu cây nến       
+LIMIT = 233  #lấy bao nhiêu cây nến       
 RSI_PERIOD = 14
 
 # 3 ĐIỀU KIỆN CHÍNH:
