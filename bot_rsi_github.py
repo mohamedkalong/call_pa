@@ -109,8 +109,8 @@ def main():
         for index, item in enumerate(results, start=1):
             vol_str = format_volume(item['v'])
             
-            # --- THÊM TAG CHO RSI >= 80 ---
-            rsi_tag = " 💎 rsi8x "  if item['r'] >= 80 else ""
+            # --- THÊM TAG CHO RSI >= 75 ---
+            rsi_tag = " 💎 rsi75 "  if item['r'] >= 75 else ""
             
             # Format: 1. #COIN | price | 24h x% | RSI x | Vol 50M #RSI80Plus
             msg += f"{index}. **#{item['s']}**|{item['p']}|+{item['c']}%|RSI:{item['r']:.1f}|Vol:{vol_str}{rsi_tag}\n"
