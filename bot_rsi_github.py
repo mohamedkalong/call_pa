@@ -107,7 +107,7 @@ def main():
             vol_str = format_volume(item['v'])
 
             # --- THÊM TAG CHO RSI >= 75 ---
-            rsi_tag = " 💎 rsi75 "  if item['r'] >= 75 else ""
+            rsi_tag = " | rsi75 "  if item['r'] >= 75 else ""
 
             # Format: 1. #COIN | price | 24h x% | RSI x | Vol 50M #RSI75
             msg += f"{now_str}|**#{item['s']}**|{item['p']}|+{item['c']}%|{item['r']:.1f}|{vol_str}{rsi_tag}\n"
