@@ -42,11 +42,7 @@ def calculate_rsi(series, period=14):
     return 100 - (100 / (1 + rs))
 
 def format_volume(vol):
-    if vol >= 1_000_000_000:
-        return f"{vol/1_000_000_000:.2f}B"
-    elif vol >= 1_000_000:
-        return f"{vol/1_000_000:.0f}M"
-    return f"{vol/1_000:.0f}K"
+    return f"{vol/1_000_000:.0f}M"
 
 def main():
     print(f"📊 [GHA] Đang quét: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI > {RSI_THRESHOLD}...")
