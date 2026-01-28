@@ -2,10 +2,14 @@ name: Github bot rsi70
 
 on:
   schedule:
-   # - cron: '23 18 * * *' # 1g.xx VN => dkgono1
-    - cron: '01 0 * * *' # 7g03 VN => ca 8g, 6g58=>6g59, 7g15=>9g33
-    - cron: '55 7 * * *' # 15g VN
-    - cron: '50 12 * * *' # 20g VN
+   # chạy task vào lúc 8g, 13g, 15g, 20g, 22g, 1g, 4g
+    - cron: '01 0 * * *' # 7g01 VN => kq 8g4x
+    - cron: '55 5 * * *' # 12g55 VN => kq ?
+    - cron: '55 7 * * *' # 14g55 VN => kq 15g1x
+    - cron: '50 12 * * *' # 19g50 VN => kq 20g3x
+    - cron: '50 14 * * *' # 21g50 VN => kq ?
+    - cron: '50 17 * * *' # 1g VN => kq ?
+    - cron: '50 20 * * *' # 4g VN => kq ?
    # - cron: '55 14 * * *' # 22g VN => mohamedkalong
     
   workflow_dispatch:      # Bấm chạy tay để test
