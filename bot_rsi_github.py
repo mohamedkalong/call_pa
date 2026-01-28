@@ -13,12 +13,12 @@ TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 # --- CẤU HÌNH ĐIỀU KIỆN LỌC ---
 TIMEFRAME = '1h'
 LIMIT = 233  #lấy bao nhiêu cây nến       
-RSI_PERIOD = 14
+RSI_PERIOD = 17
 
 # 3 ĐIỀU KIỆN CHÍNH:
 CHANGE_THRESHOLD = 15         # 1. Change > 20%
 VOLUME_THRESHOLD = 55_000_000 # 2. Volume 
-RSI_THRESHOLD = 68            # 3. RSI > 70
+RSI_THRESHOLD = 60            # 3. RSI > 70
 
 # ================= HÀM XỬ LÝ =================
 
