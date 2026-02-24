@@ -94,14 +94,14 @@ def main():
         time.sleep(0.5)
 
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    ngay_vn = now_vn.strftime("%d/%m/%Y")
-    gio_vn = now_vn.strftime("%H:%M")
+    ngay_vn = now_vn.strftime("'%d/%m/%Y")
+    gio_vn = now_vn.strftime("%'H:%M")
     now_str = f"{ngay_vn}|'{gio_vn}" # Tạo sẵn chuỗi ngày|'giờ
 
     if results:
         results.sort(key=lambda x: x['r'], reverse=True)
 
-        msg = f"🚀 LỌC COIN 24H +{CHANGE_THRESHOLD}% & VOL> {format_volume(VOLUME_THRESHOLD)} & RSI> {RSI_THRESHOLD} github\n"
+        msg = f"ĐỊNH KỲ 24H>{CHANGE_THRESHOLD}%|VOL>{format_volume(VOLUME_THRESHOLD)}|RSI>{RSI_THRESHOLD} github\n"
 
         for item in results:
             vol_str = format_volume(item['v'])
