@@ -94,9 +94,9 @@ def main():
         time.sleep(0.5)
 
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    ngay_vn = now_vn.strftime("'%d/%m/%Y")
-    gio_vn = now_vn.strftime("'%H:%M")
-    now_str = f"{ngay_vn}|'{gio_vn}" # Tạo sẵn chuỗi ngày|'giờ
+    ngay_vn = now_vn.strftime("%d/%m/%Y")
+    gio_vn = now_vn.strftime("%H:%M")
+    now_str = f"'{ngay_vn}|'{gio_vn}" # Tạo sẵn chuỗi ngày|'giờ
 
     if results:
         results.sort(key=lambda x: x['r'], reverse=True)
@@ -107,7 +107,7 @@ def main():
             vol_str = format_volume(item['v'])
 
             # --- THÊM TAG CHO RSI >= 75 ---
-            rsi_tag = " | rsi75 "  if item['r'] >= 75 else ""
+            rsi_tag = "|rsi75 "  if item['r'] >= 75 else ""
 
             # Format: 1. #COIN | price | 24h x% | RSI x | Vol 50M #RSI75
             msg += f"{now_str}|**#{item['s']}**|{item['p']}|+{item['c']}%|{item['r']:.1f}|{vol_str}{rsi_tag}\n"
