@@ -12,18 +12,17 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
 # --- CẤU HÌNH ĐIỀU KIỆN LỌC THEO CHIẾN LƯỢC TRUNG HẠN ---
-[cite_start]TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend [cite: 1]
-[cite_start]LIMIT = 233                    # Lấy đủ 233 nến để tính SMA233 [cite: 1]
+TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend [cite: 1]
+LIMIT = 233                    # Lấy đủ 233 nến để tính SMA233 [cite: 1]
 RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-[cite_start]VOLUME_THRESHOLD = 55_000_000  # 2. Volume 24h > 55M [cite: 1]
+VOLUME_THRESHOLD = 55_000_000  # 2. Volume 24h > 55M [cite: 1]
 RSI_THRESHOLD = 50             # 3. RSI 4h > 50
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
 
 def get_data_via_proxy(endpoint, params=None):
-    [cite_start]"""Gọi dữ liệu từ Binance thông qua Proxy [cite: 1, 2]"""
     url = f"{PA_PROXY_URL}/{endpoint}"
     try:
         response = requests.get(url, params=params, timeout=30)
@@ -34,7 +33,6 @@ def get_data_via_proxy(endpoint, params=None):
     return None
 
 def calculate_rsi(series, period=14):
-    [cite_start]"""Tính toán chỉ số RSI [cite: 2, 3]"""
     delta = series.diff()
     up = delta.clip(lower=0)
     down = -1 * delta.clip(upper=0)
@@ -44,17 +42,14 @@ def calculate_rsi(series, period=14):
     return 100 - (100 / (1 + rs))
 
 def calculate_sma(series, period=233):
-    """Tính toán đường trung bình động đơn giản (SMA)"""
     return series.rolling(window=period).mean()
 
 def format_volume(vol):
-    [cite_start]"""Định dạng Volume hiển thị triệu đô (M) [cite: 3]"""
     return f"{vol/1_000_000:.0f}M"
 
 def main():
     print(f"📊 Đang quét: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI4h > {RSI_THRESHOLD} & Price > SMA233-4h...")
     
-    # [cite_start]Bước 1: Lấy danh sách Ticker để lọc nhanh Change và Vol [cite: 3, 4]
     tickers = get_data_via_proxy("ticker")
     if not tickers:
         print("❌ Không lấy được dữ liệu Ticker.")
@@ -117,8 +112,8 @@ def main():
 
     # --- ĐỊNH DẠNG TIN NHẮN BÁO CÁO ---
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    date_str = now_vn.strftime("%d/%m/%Y")
-    time_str = now_vn.strftime("%H:%M")
+    date_str = now_vn.strftime("'%d/%m/%Y")
+    time_str = now_vn.strftime("'%H:%M")
 
     if results:
         # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
