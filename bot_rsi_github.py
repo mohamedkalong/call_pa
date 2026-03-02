@@ -119,13 +119,14 @@ def main():
         # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
         results.sort(key=lambda x: x['r'], reverse=True)
         
-        msg = f"🚀 **BOT TREND FOLLOWER (SMA233-4H)**\n"
-        msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
+        msg = f"🚀 **BOT >sma233-4h, rsi>50, vol>55M**\n"
+        #msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
         
         for item in results:
             vol_str = format_volume(item['v'])
             # [cite_start]Định dạng: date|time|ticker|last price|24h change|rsi|vol24h [cite: 9, 10]
             msg += f"{date_str}|{time_str}|**#{item['s']}**|{item['p']}|+{item['c']}%|{item['r']:.1f}|{vol_str}\n"
+            
     else:
         msg = f"ℹ️ Không tìm thấy coin thỏa mãn SMA233-4H & RSI > 50 lúc {date_str} {time_str}"
 
