@@ -7,22 +7,23 @@ import os
 # ================= CẤU HÌNH (CONFIG) =================
 PA_PROXY_URL = "https://longdo.eu.pythonanywhere.com/proxy"
 
+# Lấy Token từ biến môi trường (Environment Variables)
 TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
-# --- CẤU HÌNH ĐIỀU KIỆN LỌC ---
-TIMEFRAME = '1h'
-LIMIT = 233  #lấy bao nhiêu cây nến       
-RSI_PERIOD = 17
+# --- CẤU HÌNH ĐIỀU KIỆN LỌC THEO CHIẾN LƯỢC TRUNG HẠN ---
+[cite_start]TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend [cite: 1]
+[cite_start]LIMIT = 233                    # Lấy đủ 233 nến để tính SMA233 [cite: 1]
+RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
-# 3 ĐIỀU KIỆN CHÍNH:
-CHANGE_THRESHOLD = 15         # 1. Change > 20%
-VOLUME_THRESHOLD = 55_000_000 # 2. Volume 
-RSI_THRESHOLD = 60            # 3. RSI > 70
+CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
+[cite_start]VOLUME_THRESHOLD = 55_000_000  # 2. Volume 24h > 55M [cite: 1]
+RSI_THRESHOLD = 50             # 3. RSI 4h > 50
 
-# ================= HÀM XỬ LÝ =================
+# ================= HÀM XỬ LÝ (FUNCTIONS) =================
 
 def get_data_via_proxy(endpoint, params=None):
+    [cite_start]"""Gọi dữ liệu từ Binance thông qua Proxy [cite: 1, 2]"""
     url = f"{PA_PROXY_URL}/{endpoint}"
     try:
         response = requests.get(url, params=params, timeout=30)
@@ -33,6 +34,7 @@ def get_data_via_proxy(endpoint, params=None):
     return None
 
 def calculate_rsi(series, period=14):
+    [cite_start]"""Tính toán chỉ số RSI [cite: 2, 3]"""
     delta = series.diff()
     up = delta.clip(lower=0)
     down = -1 * delta.clip(upper=0)
@@ -41,12 +43,18 @@ def calculate_rsi(series, period=14):
     rs = ma_up / ma_down
     return 100 - (100 / (1 + rs))
 
+def calculate_sma(series, period=233):
+    """Tính toán đường trung bình động đơn giản (SMA)"""
+    return series.rolling(window=period).mean()
+
 def format_volume(vol):
+    [cite_start]"""Định dạng Volume hiển thị triệu đô (M) [cite: 3]"""
     return f"{vol/1_000_000:.0f}M"
 
 def main():
-    print(f"📊 [GHA] Đang quét: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI > {RSI_THRESHOLD}...")
+    print(f"📊 Đang quét: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI4h > {RSI_THRESHOLD} & Price > SMA233-4h...")
     
+    # [cite_start]Bước 1: Lấy danh sách Ticker để lọc nhanh Change và Vol [cite: 3, 4]
     tickers = get_data_via_proxy("ticker")
     if not tickers:
         print("❌ Không lấy được dữ liệu Ticker.")
@@ -57,16 +65,21 @@ def main():
         if not t['symbol'].endswith('USDT'):
             continue
         
-        change_percent = float(t['priceChangePercent'])
-        quote_vol = float(t['quoteVolume'])
-        
-        if change_percent > CHANGE_THRESHOLD and quote_vol > VOLUME_THRESHOLD:
-            filtered_tickers.append(t)
+        try:
+            change_percent = float(t['priceChangePercent'])
+            quote_vol = float(t['quoteVolume'])
+            
+            # [cite_start]Điều kiện lọc sơ bộ để giảm tải API [cite: 4]
+            if change_percent > CHANGE_THRESHOLD and quote_vol > VOLUME_THRESHOLD:
+                filtered_tickers.append(t)
+        except:
+            continue
     
-    print(f"🔍 Tìm thấy {len(filtered_tickers)} coin thỏa mãn Vol & Change.")
+    print(f"🔍 Tìm thấy {len(filtered_tickers)} coin tiềm năng. Đang check kỹ thuật 4H...")
 
     results = []
 
+    # [cite_start]Bước 2: Kiểm tra chi tiết RSI và SMA cho từng coin [cite: 5]
     for t in filtered_tickers:
         symbol = t['symbol']
         change_val = float(t['priceChangePercent'])
@@ -77,12 +90,20 @@ def main():
         klines = get_data_via_proxy("klines", params)
         
         if klines and len(klines) >= LIMIT:
+            # [cite_start]Lấy giá đóng cửa [cite: 6]
             closes = pd.Series([float(k[4]) for k in klines])
+            
+            # [cite_start]Tính RSI 4h [cite: 6]
             rsi_series = calculate_rsi(closes, RSI_PERIOD)
             current_rsi = rsi_series.iloc[-1]
+            
+            # Tính SMA 233 khung 4h
+            sma_series = calculate_sma(closes, 233)
+            current_sma = sma_series.iloc[-1]
 
-            if current_rsi > RSI_THRESHOLD:
-                print(f"✅ Khớp: {symbol} (RSI: {current_rsi:.1f})")
+            # ĐIỀU KIỆN LỌC QUYẾT ĐỊNH: RSI > 50 VÀ Giá > SMA233-4H
+            if current_rsi > RSI_THRESHOLD and price > current_sma:
+                print(f"✅ Khớp: {symbol} (RSI: {current_rsi:.1f}, Price > SMA233)")
                 results.append({
                     's': symbol, 
                     'r': current_rsi, 
@@ -91,33 +112,33 @@ def main():
                     'v': quote_vol
                 })
         
+        # [cite_start]Nghỉ ngắn để tránh spam API [cite: 8]
         time.sleep(0.5)
 
+    # --- ĐỊNH DẠNG TIN NHẮN BÁO CÁO ---
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    ngay_vn = now_vn.strftime("%d/%m/%Y")
-    gio_vn = now_vn.strftime("%H:%M")
-    now_str = f"'{ngay_vn}|'{gio_vn}" # Tạo sẵn chuỗi ngày|'giờ
+    date_str = now_vn.strftime("%d/%m/%Y")
+    time_str = now_vn.strftime("%H:%M")
 
     if results:
+        # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
         results.sort(key=lambda x: x['r'], reverse=True)
-
-        msg = f"ĐỊNH KỲ 24H>{CHANGE_THRESHOLD}%|VOL>{format_volume(VOLUME_THRESHOLD)}|RSI>{RSI_THRESHOLD} github\n"
-
+        
+        msg = f"🚀 **BOT TREND FOLLOWER (SMA233-4H)**\n"
+        msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
+        
         for item in results:
             vol_str = format_volume(item['v'])
-
-            # --- THÊM TAG CHO RSI >= 75 ---
-            rsi_tag = "|rsi75 "  if item['r'] >= 75 else ""
-
-            # Format: 1. #COIN | price | 24h x% | RSI x | Vol 50M #RSI75
-            msg += f"{now_str}|**#{item['s']}**|{item['p']}|+{item['c']}%|{item['r']:.1f}|{vol_str}{rsi_tag}\n"
+            # [cite_start]Định dạng: date|time|ticker|last price|24h change|rsi|vol24h [cite: 9, 10]
+            msg += f"{date_str}|{time_str}|**#{item['s']}**|{item['p']}|+{item['c']}%|{item['r']:.1f}|{vol_str}\n"
     else:
-        msg = f"ℹ️ **LỌC COIN 24H +{CHANGE_THRESHOLD}% & VOL> {format_volume(VOLUME_THRESHOLD)} & RSI> {RSI_THRESHOLD}**\n"
-        msg += f"⏰ {now_str}\n✅ System OK.\n❌ Không tìm thấy coin thỏa 3 điều kiện."
+        msg = f"ℹ️ Không tìm thấy coin thỏa mãn SMA233-4H & RSI > 50 lúc {date_str} {time_str}"
+
+    # [cite_start]Gửi báo cáo qua Telegram [cite: 11]
     try:
         tele_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(tele_url, json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "Markdown"})
-        print(f"✅ Đã gửi báo cáo lúc {now_str}.")
+        print(f"✅ Đã gửi báo cáo lúc {date_str} {time_str}.")
     except Exception as e:
         print(f"❌ Lỗi Telegram: {e}")
 
