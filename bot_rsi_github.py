@@ -119,7 +119,7 @@ def main():
         # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
         results.sort(key=lambda x: x['r'], reverse=True)
         
-        msg = f"🚀 **BOT >sma233-4h, rsi>50, vol>55M**|\n"
+        msg = f"🚀 **BOT >sma233-4h,24h>8%,vol>55M,rsi4h>50**|\n"
         #msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
         
         for item in results:
