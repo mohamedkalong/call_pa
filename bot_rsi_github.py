@@ -13,7 +13,7 @@ TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
 # --- CẤU HÌNH ĐIỀU KIỆN LỌC THEO CHIẾN LƯỢC TRUNG HẠN ---
 TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend [cite: 1]
-LIMIT = 233                    # Lấy đủ 233 nến để tính SMA233 [cite: 1]
+LIMIT = 500                    # Lấy đủ 233 nến để tính SMA233 [cite: 1]
 RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
@@ -119,13 +119,13 @@ def main():
         # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
         results.sort(key=lambda x: x['r'], reverse=True)
         
-        msg = f"🚀 **BOT >sma233-4h, rsi>50, vol>55M**\n"
+        msg = f"🚀 **BOT >sma233-4h, rsi>50, vol>55M**|\n"
         #msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
         
         for item in results:
             vol_str = format_volume(item['v'])
             # [cite_start]Định dạng: date|time|ticker|last price|24h change|rsi|vol24h [cite: 9, 10]
-            msg += f"{date_str}|{time_str}|**#{item['s']}**|{item['p']}|+{item['c']}%|{item['r']:.1f}|{vol_str}\n"
+            msg += f"{date_str}|{time_str}|**#{item['s']}**|{item['p']}|+{item['c']:.2f}%|{item['r']:.1f}|{vol_str}\n"
             
     else:
         msg = f"ℹ️ Không tìm thấy coin thỏa mãn SMA233-4H & RSI > 50 lúc {date_str} {time_str}"
