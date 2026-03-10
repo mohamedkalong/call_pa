@@ -17,7 +17,7 @@ LIMIT = 500                    # Lấy đủ 233 nến để tính SMA233 [cite:
 RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-VOLUME_THRESHOLD = 55_000_000  # 2. Volume 24h > 55M [cite: 1]
+VOLUME_THRESHOLD = 99_000_000  # 2. Volume 24h > 55M [cite: 1]
 RSI_THRESHOLD = 50             # 3. RSI 4h > 50
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
