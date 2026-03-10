@@ -119,7 +119,7 @@ def main():
         # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
         results.sort(key=lambda x: x['r'], reverse=True)
         
-        msg = f"🚀 **BOT: 24h>{CHANGE_THRESHOLD}%|Vol >{format_volume(VOLUME_THRESHOLD)}|RSI4h>{RSI_THRESHOLD}|EMA233-4h**|\n"
+        msg = f"🚀 **BOT: 24h>{CHANGE_THRESHOLD}%, Vol>{format_volume(VOLUME_THRESHOLD)}, RSI4h>{RSI_THRESHOLD}, >EMA233-4h**|\n"
         #msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
         
         for item in results:
