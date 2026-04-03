@@ -16,7 +16,7 @@ TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend
 LIMIT = 500                    # Lấy đủ 200 nến để tính WMA200
 RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
-CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
+CHANGE_THRESHOLD = 21           # 1. 24h Change > 21%
 VOLUME_THRESHOLD = 86_000_000  # 2. Volume 24h > 68M
 RSI_THRESHOLD = 66             # 3. RSI 4h > 68
 
