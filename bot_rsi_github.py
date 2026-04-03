@@ -12,12 +12,12 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
 # --- CẤU HÌNH ĐIỀU KIỆN LỌC THEO CHIẾN LƯỢC TRUNG HẠN ---
-TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend [cite: 1]
-LIMIT = 500                    # Lấy đủ 233 nến để tính SMA233 [cite: 1]
+TIMEFRAME = '4h'               # Sử dụng khung 4h để xác định Trend
+LIMIT = 500                    # Lấy đủ 200 nến để tính WMA200
 RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-VOLUME_THRESHOLD = 99_000_000  # 2. Volume 24h > 55M [cite: 1]
+VOLUME_THRESHOLD = 99_000_000  # 2. Volume 24h > 99M
 RSI_THRESHOLD = 50             # 3. RSI 4h > 50
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
@@ -41,15 +41,18 @@ def calculate_rsi(series, period=14):
     rs = ma_up / ma_down
     return 100 - (100 / (1 + rs))
 
-def calculate_sma(series, period=233):
-    return series.rolling(window=period).mean()
+def calculate_wma(series, period=200):
+    weights = pd.Series(range(1, period + 1))
+    return series.rolling(window=period).apply(
+        lambda x: (x * weights).sum() / weights.sum(), raw=True
+    )
 
 def format_volume(vol):
     return f"{vol/1_000_000:.0f}M"
 
 def main():
-    print(f"📊 Đang quét: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI4h > {RSI_THRESHOLD} & Price > SMA233-4h...")
-    
+    print(f"📊 Đang quét: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI4h > {RSI_THRESHOLD} & Price > WMA200-4h...")
+
     tickers = get_data_via_proxy("ticker")
     if not tickers:
         print("❌ Không lấy được dữ liệu Ticker.")
@@ -59,55 +62,48 @@ def main():
     for t in tickers:
         if not t['symbol'].endswith('USDT'):
             continue
-        
+
         try:
             change_percent = float(t['priceChangePercent'])
             quote_vol = float(t['quoteVolume'])
-            
-            # [cite_start]Điều kiện lọc sơ bộ để giảm tải API [cite: 4]
+
             if change_percent > CHANGE_THRESHOLD and quote_vol > VOLUME_THRESHOLD:
                 filtered_tickers.append(t)
         except:
             continue
-    
+
     print(f"🔍 Tìm thấy {len(filtered_tickers)} coin tiềm năng. Đang check kỹ thuật 4H...")
 
     results = []
 
-    # [cite_start]Bước 2: Kiểm tra chi tiết RSI và SMA cho từng coin [cite: 5]
     for t in filtered_tickers:
         symbol = t['symbol']
         change_val = float(t['priceChangePercent'])
         quote_vol = float(t['quoteVolume'])
         price = float(t['lastPrice'])
-        
+
         params = {'symbol': symbol, 'interval': TIMEFRAME, 'limit': LIMIT}
         klines = get_data_via_proxy("klines", params)
-        
+
         if klines and len(klines) >= LIMIT:
-            # [cite_start]Lấy giá đóng cửa [cite: 6]
             closes = pd.Series([float(k[4]) for k in klines])
-            
-            # [cite_start]Tính RSI 4h [cite: 6]
+
             rsi_series = calculate_rsi(closes, RSI_PERIOD)
             current_rsi = rsi_series.iloc[-1]
-            
-            # Tính SMA 233 khung 4h
-            sma_series = calculate_sma(closes, 233)
-            current_sma = sma_series.iloc[-1]
 
-            # ĐIỀU KIỆN LỌC QUYẾT ĐỊNH: RSI > 50 VÀ Giá > SMA233-4H
-            if current_rsi > RSI_THRESHOLD and price > current_sma:
-                print(f"✅ Khớp: {symbol} (RSI: {current_rsi:.1f}, Price > SMA233)")
+            wma_series = calculate_wma(closes, 200)
+            current_wma = wma_series.iloc[-1]
+
+            if current_rsi > RSI_THRESHOLD and price > current_wma:
+                print(f"✅ Khớp: {symbol} (RSI: {current_rsi:.1f}, Price > WMA200)")
                 results.append({
-                    's': symbol, 
-                    'r': current_rsi, 
-                    'p': price, 
+                    's': symbol,
+                    'r': current_rsi,
+                    'p': price,
                     'c': change_val,
                     'v': quote_vol
                 })
-        
-        # [cite_start]Nghỉ ngắn để tránh spam API [cite: 8]
+
         time.sleep(0.5)
 
     # --- ĐỊNH DẠNG TIN NHẮN BÁO CÁO ---
@@ -116,21 +112,18 @@ def main():
     time_str = now_vn.strftime("'%H:%M")
 
     if results:
-        # [cite_start]Sắp xếp theo RSI giảm dần [cite: 8]
         results.sort(key=lambda x: x['r'], reverse=True)
-        
-        msg = f"🚀 **BOT: 24h>{CHANGE_THRESHOLD}%, Vol>{format_volume(VOLUME_THRESHOLD)}, RSI4h>{RSI_THRESHOLD}, >EMA233-4h**|\n"
-        #msg += "date|time|ticker|last price|24h change|rsi|vol24h\n"
-        
+
+        msg = f"🚀 **BOT: 24h>{CHANGE_THRESHOLD}%, Vol>{format_volume(VOLUME_THRESHOLD)}, RSI4h>{RSI_THRESHOLD}, >WMA200-4h**|\n"
+
         for item in results:
             vol_str = format_volume(item['v'])
-            # [cite_start]Định dạng: date|time|ticker|last price|24h change|rsi|vol24h [cite: 9, 10]
             msg += f"{date_str}|{time_str}|**#{item['s']}**|{item['p']}|+{item['c']:.2f}%|{item['r']:.1f}|{vol_str}\n"
-            
-    else:
-        msg = f"ℹ️ Không tìm thấy coin thỏa mãn SMA233-4H & RSI > 50 lúc {date_str} {time_str}"
 
-    # [cite_start]Gửi báo cáo qua Telegram [cite: 11]
+    else:
+        msg = f"ℹ️ Không tìm thấy coin thỏa mãn WMA200-4H & RSI > 50 lúc {date_str} {time_str}"
+
+    # Gửi báo cáo qua Telegram
     try:
         tele_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         requests.post(tele_url, json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "Markdown"})
