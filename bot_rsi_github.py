@@ -17,8 +17,8 @@ LIMIT = 500                    # Lấy đủ 200 nến để tính WMA200
 RSI_PERIOD = 14                # Chu kỳ RSI tiêu chuẩn
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-VOLUME_THRESHOLD = 99_000_000  # 2. Volume 24h > 99M
-RSI_THRESHOLD = 50             # 3. RSI 4h > 50
+VOLUME_THRESHOLD = 86_000_000  # 2. Volume 24h > 68M
+RSI_THRESHOLD = 66             # 3. RSI 4h > 68
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
 
