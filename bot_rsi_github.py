@@ -125,7 +125,7 @@ def main():
         msg = f"🚀 Github 24h>8%, Vol>55M, RSI>60, VolSpike>2.1x \n"          
         for item in results:
             vol_str = format_volume(item['v'])
-            msg += f"{date_str}|{time_str}|#{item['s']}|{item['p']} |24h:+{item['c']:.1f}% |RSI:{item['r']:.1f}|Vol x{item['vs']:.1f}\n"
+            msg += f"{date_str}|{time_str}|#{item['s']}|{item['p']} |24h:+{item['c']:.1f}% |RSI:{item['r']:.1f}|Vol24h:{vol_str}\n"
                 
     else:
         msg = f"ℹ️ Không tìm thấy coin thỏa SMA200 & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
