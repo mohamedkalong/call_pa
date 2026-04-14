@@ -117,8 +117,8 @@ def main():
 
     # --- ĐỊNH DẠNG TIN NHẮN BÁO CÁO ---
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    date_str = now_vn.strftime("%d/%m/%Y")
-    time_str = now_vn.strftime("%H:%M")
+    date_str = now_vn.strftime("'%d/%m/%Y")
+    time_str = now_vn.strftime("'%H:%M")
 
     if results:
         results.sort(key=lambda x: x['r'], reverse=True)
@@ -128,9 +128,8 @@ def main():
 
         for item in results:
             vol_str = format_volume(item['v'])
-            msg += f"**#{item['s']}** | P: {item['p']} | 24h: +{item['c']:.1f}% | RSI: {item['r']:.1f} | Vol x{item['vs']:.1f}\n"
-        
-        msg += f"\n⏰ *Lúc: {date_str} {time_str}*"
+            msg += f"{date_str}|{time_str}|#{item['s']}|{item['p']} |24h:+{item['c']:.1f}% |RSI:{item['r']:.1f}|Vol x{item['vs']:.1f}\n"
+                
     else:
         msg = f"ℹ️ Không tìm thấy coin thỏa SMA200 & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
 
