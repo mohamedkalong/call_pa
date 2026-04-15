@@ -7,20 +7,19 @@ import os
 # ================= CẤU HÌNH (CONFIG) =================
 PA_PROXY_URL = "https://longdo.eu.pythonanywhere.com/proxy"
 
-# Lấy Token từ biến môi trường (Environment Variables)
 TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
 
-# --- CẤU HÌNH ĐIỀU KIỆN LỌC THEO YÊU CẦU ---
 TIMEFRAME = '4h'               
-LIMIT = 500                    # Lấy đủ nến để tính SMA200 và Volume MA
+LIMIT = 500                    
 RSI_PERIOD = 14   
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-VOLUME_THRESHOLD = 55_000_000  # 2. Volume 24h > 55M
+VOLUME_THRESHOLD = 100_000_000 # 2. Volume 24h > 100M
 VOL_SPIKE_RATIO = 2.1          # 3. Vol spike > 2.1 lần trung bình 13 nến trước
 VOL_MA_PERIOD = 13             
-RSI_THRESHOLD = 60             # 4. RSI > 60
+RSI_THRESHOLD = 50             # 4. RSI > 50
+SMA_PERIOD = 233               # 5. Giá trên SMA 233
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
 
@@ -50,7 +49,7 @@ def format_volume(vol):
     return f"{vol/1_000_000:.1f}M"
 
 def main():
-    print(f"📊 Đang quét (SMA200): Change> {CHANGE_THRESHOLD}%, Vol24h> {format_volume(VOLUME_THRESHOLD)}, RSI> {RSI_THRESHOLD}, VolSpike> {VOL_SPIKE_RATIO}x")
+    print(f"📊 Đang quét (SMA{SMA_PERIOD}): Change> {CHANGE_THRESHOLD}%, Vol24h> {format_volume(VOLUME_THRESHOLD)}, RSI> {RSI_THRESHOLD}, VolSpike> {VOL_SPIKE_RATIO}x")
 
     tickers = get_data_via_proxy("ticker")
     if not tickers:
@@ -81,7 +80,7 @@ def main():
         params = {'symbol': symbol, 'interval': TIMEFRAME, 'limit': LIMIT}
         klines = get_data_via_proxy("klines", params)
 
-        if klines and len(klines) >= 200:
+        if klines and len(klines) >= SMA_PERIOD:
             closes = pd.Series([float(k[4]) for k in klines])
             volumes = pd.Series([float(k[7]) for k in klines]) 
 
@@ -89,11 +88,11 @@ def main():
             rsi_series = calculate_rsi(closes, RSI_PERIOD)
             current_rsi = rsi_series.iloc[-1]
 
-            # 2. Tính SMA 200
-            sma_series = calculate_sma(closes, 200)
+            # 2. Tính SMA 233
+            sma_series = calculate_sma(closes, SMA_PERIOD)
             current_sma = sma_series.iloc[-1]
 
-            # 3. Tính Volume Spike (Nến đóng gần nhất so với trung bình 13 nến trước)
+            # 3. Tính Volume Spike
             current_vol = volumes.iloc[-1]
             prev_vols_avg = volumes.iloc[-(VOL_MA_PERIOD+1):-1].mean()
             vol_spike = current_vol / prev_vols_avg if prev_vols_avg > 0 else 0
@@ -122,13 +121,13 @@ def main():
 
     if results:
         results.sort(key=lambda x: x['r'], reverse=True)
-        msg = f"🚀 Github 24h>8%, Vol>55M, RSI>60, VolSpike>2.1x \n"          
+        msg = f"🚀 Github 24h>8%, Vol>100M, RSI>50, VolSpike>2.1x \n"          
         for item in results:
             vol_str = format_volume(item['v'])
             msg += f"{date_str}|{time_str}|#{item['s']}|{item['p']} |24h:+{item['c']:.1f}% |RSI:{item['r']:.1f}|Vol24h:{vol_str}\n"
                 
     else:
-        msg = f"ℹ️ Không tìm thấy coin thỏa SMA200 & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
+        msg = f"ℹ️ Không tìm thấy coin thỏa SMA{SMA_PERIOD} & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
 
     # Gửi báo cáo qua Telegram
     try:
