@@ -15,11 +15,11 @@ LIMIT = 500
 RSI_PERIOD = 14   
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-VOLUME_THRESHOLD = 100_000_000 # 2. Volume 24h > 100M
+VOLUME_THRESHOLD = 88_000_000 # 2. Volume 24h > 100M
 VOL_SPIKE_RATIO = 2.1          # 3. Vol spike > 2.1 lần trung bình 13 nến trước
 VOL_MA_PERIOD = 13             
-RSI_THRESHOLD = 50             # 4. RSI > 50
-SMA_PERIOD = 233               # 5. Giá trên SMA 233
+RSI_THRESHOLD = 45             # 4. RSI > 50
+EMA_PERIOD = 200               # 5. Giá trên EMA 200
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
 
@@ -42,14 +42,14 @@ def calculate_rsi(series, period=14):
     rs = ma_up / ma_down
     return 100 - (100 / (1 + rs))
 
-def calculate_sma(series, period=200):
-    return series.rolling(window=period).mean()
+def calculate_ema(series, period=200):
+    return series.ewm(span=period, adjust=False).mean()
 
 def format_volume(vol):
     return f"{vol/1_000_000:.1f}M"
 
 def main():
-    print(f"📊 Đang quét (SMA{SMA_PERIOD}): Change> {CHANGE_THRESHOLD}%, Vol24h> {format_volume(VOLUME_THRESHOLD)}, RSI> {RSI_THRESHOLD}, VolSpike> {VOL_SPIKE_RATIO}x")
+    print(f"📊 Đang quét (EMA{EMA_PERIOD}): Change> {CHANGE_THRESHOLD}%, Vol24h> {format_volume(VOLUME_THRESHOLD)}, RSI> {RSI_THRESHOLD}, VolSpike> {VOL_SPIKE_RATIO}x")
 
     tickers = get_data_via_proxy("ticker")
     if not tickers:
@@ -80,7 +80,7 @@ def main():
         params = {'symbol': symbol, 'interval': TIMEFRAME, 'limit': LIMIT}
         klines = get_data_via_proxy("klines", params)
 
-        if klines and len(klines) >= SMA_PERIOD:
+        if klines and len(klines) >= EMA_PERIOD:
             closes = pd.Series([float(k[4]) for k in klines])
             volumes = pd.Series([float(k[7]) for k in klines]) 
 
@@ -88,9 +88,9 @@ def main():
             rsi_series = calculate_rsi(closes, RSI_PERIOD)
             current_rsi = rsi_series.iloc[-1]
 
-            # 2. Tính SMA 233
-            sma_series = calculate_sma(closes, SMA_PERIOD)
-            current_sma = sma_series.iloc[-1]
+            # 2. Tính EMA 200
+            ema_series = calculate_ema(closes, EMA_PERIOD)
+            current_ema = ema_series.iloc[-1]
 
             # 3. Tính Volume Spike
             current_vol = volumes.iloc[-1]
@@ -99,7 +99,7 @@ def main():
 
             # KIỂM TRA ĐIỀU KIỆN
             if (current_rsi > RSI_THRESHOLD and 
-                price > current_sma and 
+                price > current_ema and 
                 vol_spike > VOL_SPIKE_RATIO):
                 
                 print(f"✅ Khớp: {symbol} (RSI: {current_rsi:.1f}, VolSpike: {vol_spike:.2f}x)")
@@ -127,7 +127,7 @@ def main():
             msg += f"{date_str}|{time_str}|#{item['s']}|{item['p']} |24h:+{item['c']:.1f}% |RSI:{item['r']:.1f}|Vol24h:{vol_str}\n"
                 
     else:
-        msg = f"ℹ️ Không tìm thấy coin thỏa SMA{SMA_PERIOD} & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
+        msg = f"ℹ️ Không tìm thấy coin thỏa EMA{EMA_PERIOD} & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
 
     # Gửi báo cáo qua Telegram
     try:
