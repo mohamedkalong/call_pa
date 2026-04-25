@@ -121,7 +121,7 @@ def main():
 
     if results:
         results.sort(key=lambda x: x['r'], reverse=True)
-        msg = f"Github 24h>8%,Vol>88M,RSI>45,Volx2.1,EMA200\n"          
+        msg = f"Github 8%,>88M,Vspike,EMA200\n"       
         for item in results:
             vol_str = format_volume(item['v'])
             msg += f"{date_str}|{time_str}|#{item['s']}|{item['p']} |24h:+{item['c']:.1f}% |RSI:{item['r']:.1f}|Vol24h:{vol_str}\n"
