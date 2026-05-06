@@ -19,7 +19,7 @@ VOLUME_THRESHOLD = 88_000_000 # 2. Volume 24h > 100M
 VOL_SPIKE_RATIO = 2.1          # 3. Vol spike > 2.1 lần trung bình 13 nến trước
 VOL_MA_PERIOD = 13             
 RSI_THRESHOLD = 45             # 4. RSI > 50
-EMA_PERIOD = 200               # 5. Giá trên EMA 200
+EMA_PERIOD = 89               # 5. Giá trên EMA 89
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
 
