@@ -9,7 +9,6 @@ PA_PROXY_URL = "https://longdo.eu.pythonanywhere.com/proxy"
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELE_CHATID")
-
 TIMEFRAME = '4h'                
 LIMIT = 500                     
 RSI_PERIOD = 14   
@@ -123,19 +122,16 @@ def main():
 
     # --- ĐỊNH DẠNG TIN NHẮN BÁO CÁO ---
     now_vn = datetime.utcnow() + timedelta(hours=7)
-    date_str = now_vn.strftime("%d/%m/%Y")
-    time_str = now_vn.strftime("%H:%M")
+    date_str = now_vn.strftime("'%d/%m/%Y")
+    time_str = now_vn.strftime("'%H:%M")
 
     if results:
         results.sort(key=lambda x: x['c'], reverse=True) # Sắp xếp theo % tăng trưởng
-        msg = f"🚀 *TÍN HIỆU 4H: EMA34 > EMA89*\n"
-        msg += f"Cấu hình: Change > {CHANGE_THRESHOLD}%, Vol > {format_volume(VOLUME_THRESHOLD)}, RSI > {RSI_THRESHOLD}\n\n"
-        
+        msg = f"🚀 8%-88M-rsi50->EMA89\n"
+        msg += f"{date_str}|{time_str}\n"
         for item in results:
             vol_str = format_volume(item['v'])
-            msg += f"#{item['s']} | Giá: {item['p']}\n"
-            msg += f"📈 24h: +{item['c']:.1f}% | RSI: {item['r']:.1f} | Vol: {vol_str}\n"
-            msg += f"--- --- --- ---\n"
+            msg += f"#{item['s']}|{item['p']}|+{item['c']:.1f}%|RSI:{item['r']:.1f}|Vol24h:{vol_str} \n"
                 
     else:
         msg = f"ℹ️ Không tìm thấy coin thỏa điều kiện EMA34 > EMA89 & RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
