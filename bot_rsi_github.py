@@ -14,10 +14,10 @@ LIMIT = 500
 RSI_PERIOD = 14   
 
 CHANGE_THRESHOLD = 8           # 1. 24h Change > 8%
-VOLUME_THRESHOLD = 88_000_000 # 2. Volume 24h > 88M
-RSI_THRESHOLD = 50             # 3. RSI > 50
+VOLUME_THRESHOLD = 55_000_000 # 2. Volume 24h > 88M
+RSI_THRESHOLD = 40             # 3. RSI > 50
 EMA_FAST = 34                  # 4. EMA 34
-EMA_SLOW = 89                  # 5. EMA 89
+EMA_SLOW = 200                  # 5. EMA 89
 
 
 # ================= HÀM XỬ LÝ (FUNCTIONS) =================
