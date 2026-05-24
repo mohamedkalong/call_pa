@@ -124,10 +124,11 @@ def main():
     now_vn = datetime.utcnow() + timedelta(hours=7)
     date_str = now_vn.strftime("'%d/%m/%Y")
     time_str = now_vn.strftime("'%H:%M")
+    vol_fil = format_volume(VOLUME_THRESHOLD)
 
     if results:
         results.sort(key=lambda x: x['c'], reverse=True) # Sắp xếp theo % tăng trưởng
-        msg = f"🚀 8%-88M-rsi50->EMA89\n"
+        msg = f"🚀 8%-{vol_fil}-rsi {RSI_THRESHOLD}-EMA > {EMA_SLOW}\n"
         msg += f"{date_str}|{time_str}\n"
         for item in results:
             vol_str = format_volume(item['v'])
