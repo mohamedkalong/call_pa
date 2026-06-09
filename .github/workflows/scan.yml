@@ -1,0 +1,30 @@
+name: Scan Coins (4H)
+
+on:
+  schedule:
+    # Chạy mỗi 4 tiếng: 1:00, 5:00, 9:00, 13:00, 17:00, 21:00 UTC
+    # (tương đương 8h, 12h, 16h, 20h, 0h, 4h sáng VN)
+    - cron: '0 1,5,9,13,17,21 * * *'
+  workflow_dispatch:         # Cho phép chạy thủ công từ GitHub UI
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas
+
+      - name: Chạy main.py
+        env:
+          TELE_TOKEN:  ${{ secrets.TELE_TOKEN }}
+          TELE_CHATID: ${{ secrets.TELE_CHATID }}
+        run: python main.py
