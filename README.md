@@ -1,3 +1,2 @@
-3.4.2026
-. mỗi khi update cron
-. 60 ngày last update để repo sống
+9.6.2026
+tín hiệu mới market cap >100M
