@@ -15,8 +15,8 @@ TIMEFRAME  = '4h'
 LIMIT      = 500
 RSI_PERIOD = 14
 
-CHANGE_THRESHOLD = 8            # 24h Change > 8%
-VOLUME_THRESHOLD = 100_000_000  # Volume 24h > 100M
+CHANGE_THRESHOLD = 5            # 24h Change > 5%
+VOLUME_THRESHOLD = 50_000_000  # Volume 24h > 100M
 RSI_THRESHOLD    = 40           # RSI > 40
 EMA_FAST         = 34
 EMA_SLOW         = 200
