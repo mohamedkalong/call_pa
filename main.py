@@ -124,10 +124,10 @@ def main():
         # Sắp xếp theo RSI giảm dần (RSI cao nhất lên đầu)
         results.sort(key=lambda x: x['r'], reverse=True)
         msg  = f"🚀 *CẢNH BÁO COIN RSI > {RSI_THRESHOLD} (WHITELIST)*\n"
-        msg += f"{date_str} | {time_str} (Khung {TIMEFRAME})\n\n"
+        msg += f"{date_str} | {time_str} (Khung {TIMEFRAME})\n"
         for item in results:
             vol_str = format_volume(item['v'])
-            msg += f"• *#{item['s']}* | Giá: {item['p']} | RSI: *{item['r']:.1f}* | 24h: {item['c']:+.1f}% | Vol: {vol_str}\n"
+            msg += f"#{item['s']}|{item['p']}|RSI:{item['r']:.1f} |+{item['c']:+.1f}%|Vol:{vol_str}\n"
     else:
         msg = f"ℹ️ Không có coin nào trong Whitelist thỏa mãn RSI > {RSI_THRESHOLD} lúc {date_str} {time_str}"
 
