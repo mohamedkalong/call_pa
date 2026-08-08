@@ -100,7 +100,7 @@ def main():
         if klines and len(klines) >= RSI_PERIOD + 1:
             closes      = pd.Series([float(k[4]) for k in klines])
             rsi_series  = calculate_rsi(closes, RSI_PERIOD)
-            current_rsi = rsi_series.iloc[-1]
+            current_rsi = rsi_series.iloc[-2]
 
             # --- Điều kiện: RSI > 71 ---
             if current_rsi > RSI_THRESHOLD:
