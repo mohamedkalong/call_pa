@@ -12,7 +12,7 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID   = os.environ.get("TELE_CHATID")
 
 TIMEFRAME     = '4h'
-LIMIT         = 240   # RSI(14) chỉ cần 100 nến là đủ tính toán chính xác
+LIMIT         = 200   # RSI(14) chỉ cần 100 nến là đủ tính toán chính xác
 RSI_PERIOD    = 14
 RSI_THRESHOLD = 71    # Điều kiện RSI > 71
 
