@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 # ================= CẤU HÌNH =================
-MIN_MCAP = 50_000_000       # Market cap tối thiểu: 50M
+MIN_MCAP = 100_000_000       # Market cap tối thiểu: 50M
 PAGES = 4                    # Lấy top 1250 coin (250 coin/page x 5 page)
 OUTPUT_FILE = "whitelist.json"
 
