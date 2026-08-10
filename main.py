@@ -12,11 +12,11 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELE_TOKEN")
 TELEGRAM_CHAT_ID   = os.environ.get("TELE_CHATID")
 
 TIMEFRAME  = '4h'
-LIMIT      = 500
+LIMIT      = 1000
 RSI_PERIOD = 14
 
 CHANGE_THRESHOLD = 5            # 24h Change > 5%
-VOLUME_THRESHOLD = 50_000_000  # Volume 24h > 100M
+VOLUME_THRESHOLD = 30_000_000  # Volume 24h > 100M
 RSI_THRESHOLD    = 66           # RSI > 40
 EMA_FAST         = 13
 EMA_SLOW         = 123
