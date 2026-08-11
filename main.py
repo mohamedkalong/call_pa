@@ -72,7 +72,7 @@ def main():
     mcap_whitelist = load_whitelist()
     use_whitelist  = len(mcap_whitelist) > 0
 
-    print(f"📊 Đang quét {TIMEFRAME}: Change>{CHANGE_THRESHOLD}% | Vol24h>{format_volume(VOLUME_THRESHOLD)} | RSI>{RSI_THRESHOLD} | Giá>EMA{EMA_FAST}>EMA{EMA_SLOW} | Mcap>50M")
+    print(f"📊 Đang quét {TIMEFRAME}: Change>{CHANGE_THRESHOLD}% | Vol24h>{format_volume(VOLUME_THRESHOLD)} | RSI>{RSI_THRESHOLD} | Giá>EMA{EMA_FAST}>EMA{EMA_SLOW} | Mcap>100M")
 
     # --- Lấy toàn bộ ticker từ Binance ---
     tickers = get_data_via_proxy("ticker")
@@ -154,7 +154,7 @@ def main():
 
     if results:
         results.sort(key=lambda x: x['c'], reverse=True)
-        msg  = f"🚀 {CHANGE_THRESHOLD}%-{vol_fil}-RSI{RSI_THRESHOLD}-EMA>{EMA_SLOW}-Mcap>50M\n"
+        msg  = f"🚀 {CHANGE_THRESHOLD}%-{vol_fil}-RSI{RSI_THRESHOLD}-EMA>{EMA_SLOW}-Mcap>100M\n"
         msg += f"{date_str}|{time_str}\n"
         for item in results:
             vol_str = format_volume(item['v'])
