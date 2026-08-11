@@ -118,31 +118,36 @@ def main():
             closes  = pd.Series([float(k[4]) for k in klines])
             volumes = pd.Series([float(k[7]) for k in klines])
 
-            rsi_series  = calculate_rsi(closes, RSI_PERIOD)
-            ema34_series = calculate_ema(closes, EMA_FAST)
-            ema200_series = calculate_ema(closes, EMA_SLOW)
+            rsi_series   = calculate_rsi(closes, RSI_PERIOD)
+            ema_fast_series = calculate_ema(closes, EMA_FAST)
+            ema_slow_series = calculate_ema(closes, EMA_SLOW)
 
-            current_rsi   = rsi_series.iloc[-1]
-            current_ema34 = ema34_series.iloc[-1]
-            current_ema200 = ema200_series.iloc[-1]
+            # --- LẤY DỮ LIỆU CỦA CÂY NẾN ĐÃ ĐÓNG (-2) ---
+            closed_price   = closes.iloc[-2]         # Giá đóng cửa nến trước
+            closed_rsi     = rsi_series.iloc[-2]     # RSI nến trước
+            closed_ema_fast = ema_fast_series.iloc[-2] # EMA Fast nến trước
+            closed_ema_slow = ema_slow_series.iloc[-2] # EMA Slow nến trước
 
-            current_vol    = volumes.iloc[-1]
-            prev_vols_avg  = volumes.iloc[-14:-1].mean()
-            vol_spike      = current_vol / prev_vols_avg if prev_vols_avg > 0 else 0
+            # --- TÍNH VOL SPIKE CỦA NẾN ĐÃ ĐÓNG ---
+            closed_vol    = volumes.iloc[-2]
+            prev_vols_avg = volumes.iloc[-15:-2].mean() # Trung bình 13 cây nến trước cây [-2]
+            vol_spike     = closed_vol / prev_vols_avg if prev_vols_avg > 0 else 0
 
-            if (current_rsi > RSI_THRESHOLD and
-                    price > current_ema34 and
-                    current_ema34 > current_ema200):
+            # --- ĐIỀU KIỆN LỌC (Dựa hoàn toàn vào nến đã đóng) ---
+            if (closed_rsi > RSI_THRESHOLD and
+                    closed_price > closed_ema_fast and
+                    closed_ema_fast > closed_ema_slow):
 
-                print(f"✅ Khớp: {symbol} | RSI:{current_rsi:.1f} | EMA34:{current_ema34:.4f} | EMA200:{current_ema200:.4f}")
+                print(f"✅ Khớp: {symbol} | RSI[-2]:{closed_rsi:.1f} | EMA_Fast:{closed_ema_fast:.4f} | EMA_Slow:{closed_ema_slow:.4f}")
                 results.append({
                     's':  symbol,
-                    'r':  current_rsi,
-                    'p':  price,
+                    'r':  closed_rsi,
+                    'p':  price, # Hoặc thay bằng closed_price nếu muốn hiển thị giá đóng của nến đó
                     'c':  change_val,
                     'v':  quote_vol_24h,
                     'vs': vol_spike
                 })
+
 
         time.sleep(0.3)
 
