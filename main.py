@@ -160,7 +160,7 @@ def main():
     if results:
         results.sort(key=lambda x: x['c'], reverse=True)
         msg  = f"🚀 {CHANGE_THRESHOLD}%-{vol_fil}-RSI{RSI_THRESHOLD}-EMA>{EMA_SLOW}-Mcap>100M\n"
-        msg += f"{date_str}|{time_str}\n"
+        msg += f"{date_str}|{time_str} | khung {TIMEFRAME} \n"
         for item in results:
             vol_str = format_volume(item['v'])
             msg += f"#{item['s']}|{item['p']}|+{item['c']:.1f}%|RSI:{item['r']:.1f}|Vol:{vol_str}\n"
