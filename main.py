@@ -77,9 +77,14 @@ def main():
     # --- Lấy toàn bộ ticker từ Binance ---
     tickers = get_data_via_proxy("ticker")
     if not tickers:
-        print("❌ Không lấy được dữ liệu Ticker.")
+        print("❌ Không lấy được dữ liệu ticker.")
         return
 
+    if not isinstance(tickers, list):
+        print("❌ Sai định dạng ticker:")
+        print(tickers)
+        return
+    
     # --- Lọc vòng 1: Change%, Volume, Whitelist ---
     filtered_tickers = []
     for t in tickers:
